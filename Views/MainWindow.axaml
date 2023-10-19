@@ -17,6 +17,7 @@
         Background="Transparent"
         SystemDecorations="None"
         UseLayoutRounding="True"
+        Icon="/Assets/ytdlp.png"
         ClipToBounds="True"
         CanResize="True">
     
