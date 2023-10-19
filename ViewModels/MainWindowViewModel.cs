@@ -4,13 +4,17 @@ namespace YouTubeDownloader.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject
 {
+	public string AppTitle { get; set; } = "YouTube Downloader GUI";
+
+	#region Download Panel Properties
+
 	private string _fileName = "Test";
 	public string FileName
 	{
 		set
 		{
 			this.RaiseAndSetIfChanged(ref _fileName, value);
-			ProgressText = $"{{0}}/{{3}} {value} ({{1:0}})";
+			ProgressText = $"{{0}}/{{3}} {value} ({{1:0}}%)";
 		}
 	}
 
@@ -35,10 +39,12 @@ public class MainWindowViewModel : ReactiveObject
 		set => this.RaiseAndSetIfChanged(ref _bytesDownloaded, value);
 	}
 
-	private string _progressText = "{0}/{3}  ({1:0})";
+	private string _progressText = "{0}/{3}  ({1:0}%)";
 	public string ProgressText
 	{
 		get => _progressText;
 		set => this.RaiseAndSetIfChanged(ref _progressText, value);
 	}
+
+	#endregion
 }

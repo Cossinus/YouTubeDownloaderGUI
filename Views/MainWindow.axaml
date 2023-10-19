@@ -21,6 +21,19 @@
         ClipToBounds="True"
         CanResize="True">
     
+    <Window.Styles>
+        <Style Selector="Button.ExitButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Red"/>
+        </Style>
+        <Style Selector="Button.MinimizeButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Opacity" Value="0.4"/>
+        </Style>
+        <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+    </Window.Styles>
+    
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -39,15 +52,33 @@
                         MaterialOpacity="0.75" />
                 </ExperimentalAcrylicBorder.Material>
             </ExperimentalAcrylicBorder>
+            
+            <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#1F0018" Height="20" VerticalAlignment="Top"
+                    PointerMoved="DragPanel_OnPointerMoved" 
+                    PointerPressed="DragPanel_OnPointerPressed" 
+                    PointerReleased="DragPanel_OnPointerReleased">
+                <Grid HorizontalAlignment="Stretch">
+                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Top" Padding="3,1,0,0"/>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <Button Classes="MinimizeButton" Height="20" Width="20" CornerRadius="0" Background="Transparent" BorderThickness="0">
+                            <Button.Transitions>
+                                <Transitions>
+                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                </Transitions>
+                            </Button.Transitions>
+                        </Button>
+                        <Button Classes="ExitButton" Height="20" Width="20" CornerRadius="0" Background="Transparent" BorderThickness="0">
+                            <Button.Transitions>
+                                <Transitions>
+                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                </Transitions>
+                            </Button.Transitions>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
         
-            <StackPanel x:Name="DragPanel" 
-                        Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                        VerticalAlignment="Top" Height="20" Background="#1F0018" 
-                        PointerMoved="DragPanel_OnPointerMoved" 
-                        PointerPressed="DragPanel_OnPointerPressed" 
-                        PointerReleased="DragPanel_OnPointerReleased">
-                <Label Content=""/>
-            </StackPanel>
+            
         
             <StackPanel x:Name="DownloadPanel" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="0">
                 <StackPanel.Transitions>
