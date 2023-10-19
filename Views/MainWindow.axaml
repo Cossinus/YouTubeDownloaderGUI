@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:YouTubeDownloader.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
+        x:Class="YouTubeDownloader.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="0"
+        ExtendClientAreaChromeHints="NoChrome"
+        WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="AcrylicBlur"
+        MinWidth="1280" MinHeight="720"
+        Title="YouTube Downloader GUI"
+        Width="1920" Height="1080"
+        Background="Transparent"
+        SystemDecorations="None"
+        UseLayoutRounding="True"
+        ClipToBounds="True"
+        CanResize="True">
+    
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    
+    <Border>
+        <Grid ShowGridLines="True" RowDefinitions="*,*,*" ColumnDefinitions="*,*">
+
+            <ExperimentalAcrylicBorder Grid.RowSpan="3" Grid.ColumnSpan="2" IsHitTestVisible="False">
+                <ExperimentalAcrylicBorder.Material>
+                    <ExperimentalAcrylicMaterial
+                        BackgroundSource="Digger"
+                        TintColor="#1f0006"
+                        TintOpacity="1"
+                        MaterialOpacity="0.75" />
+                </ExperimentalAcrylicBorder.Material>
+            </ExperimentalAcrylicBorder>
+        
+            <StackPanel x:Name="DragPanel" 
+                        Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                        VerticalAlignment="Top" Height="20" Background="#1F0018" 
+                        PointerMoved="DragPanel_OnPointerMoved" 
+                        PointerPressed="DragPanel_OnPointerPressed" 
+                        PointerReleased="DragPanel_OnPointerReleased">
+                <Label Content=""/>
+            </StackPanel>
+        
+            <StackPanel x:Name="DownloadPanel" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="0">
+                <StackPanel.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Height" Duration="0:0:0.5"/>
+                    </Transitions>
+                </StackPanel.Transitions>
+                
+                
+                <ProgressBar HorizontalAlignment="Stretch" ShowProgressText="True"
+                             ProgressTextFormat="{Binding ProgressText}" 
+                             Maximum="{Binding FileSize}" 
+                             Value="{Binding BytesDownloaded}" 
+                             Height="30" Foreground="#1F0018"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

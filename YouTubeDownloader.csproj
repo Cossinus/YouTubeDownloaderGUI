@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+        <Folder Include="Models\" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.2"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.7.1" />
+    </ItemGroup>
+</Project>
