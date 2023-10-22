@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:YouTubeDownloader.ViewModels"
+        xmlns:svg="clr-namespace:Svg;assembly=Svg.Custom"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
         x:Class="YouTubeDownloader.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -18,12 +19,14 @@
         SystemDecorations="None"
         UseLayoutRounding="True"
         Icon="/Assets/ytdlp.png"
+        FontFamily="Poppins"
         ClipToBounds="True"
         CanResize="True">
     
     <Window.Styles>
         <Style Selector="Button.ExitButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="Red"/>
+            <Setter Property="Opacity" Value="0.7"/>
         </Style>
         <Style Selector="Button.MinimizeButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="White"/>
@@ -41,9 +44,8 @@
     </Design.DataContext>
     
     <Border>
-        <Grid ShowGridLines="True" RowDefinitions="*,*,*" ColumnDefinitions="*,*">
-
-            <ExperimentalAcrylicBorder Grid.RowSpan="3" Grid.ColumnSpan="2" IsHitTestVisible="False">
+        <Grid ShowGridLines="True" RowDefinitions="*,*,*" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*">
+            <ExperimentalAcrylicBorder Grid.RowSpan="3" Grid.ColumnSpan="12" IsHitTestVisible="False">
                 <ExperimentalAcrylicBorder.Material>
                     <ExperimentalAcrylicMaterial
                         BackgroundSource="Digger"
@@ -53,21 +55,35 @@
                 </ExperimentalAcrylicBorder.Material>
             </ExperimentalAcrylicBorder>
             
-            <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#1F0018" Height="20" VerticalAlignment="Top"
+            <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12" Background="#1F0018" Height="30" 
+                    VerticalAlignment="Top"
                     PointerMoved="DragPanel_OnPointerMoved" 
                     PointerPressed="DragPanel_OnPointerPressed" 
                     PointerReleased="DragPanel_OnPointerReleased">
                 <Grid HorizontalAlignment="Stretch">
-                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Top" Padding="3,1,0,0"/>
+                    <Image HorizontalAlignment="Left" Source="avares://YouTubeDownloader/Assets/ytdlp.png"/>
+                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" 
+                           VerticalAlignment="Center" Padding="33,1,0,0"/>
+                    
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Classes="MinimizeButton" Height="20" Width="20" CornerRadius="0" Background="Transparent" BorderThickness="0">
+                        <Button Classes="MinimizeButton" Command="{Binding MinimizeAppCommand}"
+                                Height="30" Width="30" 
+                                CornerRadius="0" 
+                                Background="Transparent" 
+                                BorderThickness="0">
+                            <Image Source="/Assets/Minimize.png"/>
                             <Button.Transitions>
                                 <Transitions>
                                     <BrushTransition Property="Background" Duration="0:0:0.2"/>
                                 </Transitions>
                             </Button.Transitions>
                         </Button>
-                        <Button Classes="ExitButton" Height="20" Width="20" CornerRadius="0" Background="Transparent" BorderThickness="0">
+                        <Button Classes="ExitButton" Command="{Binding CloseAppCommand}"
+                                Height="30" Width="30" 
+                                CornerRadius="0" 
+                                Background="Transparent" 
+                                BorderThickness="0">
+                            <Image Source="/Assets/Close.png"/>
                             <Button.Transitions>
                                 <Transitions>
                                     <BrushTransition Property="Background" Duration="0:0:0.2"/>
@@ -80,7 +96,9 @@
         
             
         
-            <StackPanel x:Name="DownloadPanel" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="0">
+            <StackPanel x:Name="DownloadPanel" Height="0" 
+                        VerticalAlignment="Bottom" HorizontalAlignment="Stretch" 
+                        Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="12">
                 <StackPanel.Transitions>
                     <Transitions>
                         <DoubleTransition Property="Height" Duration="0:0:0.5"/>

@@ -11,7 +11,7 @@ public class DownloadWithProgress : IDisposable
 	private readonly string _destinationPath;
 	private readonly HttpClient _httpClient;
 
-	public delegate void ProgressChangedHandler(long? totalSize, long totalBytesDownloaded, double? progressPercentage);
+	public delegate void ProgressChangedHandler(long? totalSize, long totalBytesDownloaded);
 
 	public event ProgressChangedHandler ProgressChanged = null!;
 	
@@ -42,7 +42,7 @@ public class DownloadWithProgress : IDisposable
 			if (bytesRead == 0)
 			{
 				isMoreToRead = false;
-				TriggerProgressChanged(totalSize, totalBytesRead);
+				ProgressChanged(totalSize, totalBytesRead);
 				continue;
 			}
 
@@ -50,20 +50,9 @@ public class DownloadWithProgress : IDisposable
 
 			totalBytesRead += bytesRead;
 
-			TriggerProgressChanged(totalSize, totalBytesRead);
+			ProgressChanged(totalSize, totalBytesRead);
 
 		} while (isMoreToRead);
-	}
-
-	private void TriggerProgressChanged(long? totalSize, long totalBytesRead)
-	{
-		double? progressPercentage = null;
-		if (totalSize.HasValue)
-		{
-			progressPercentage = Math.Round((double)totalBytesRead / totalSize.Value * 100, 2);
-		}
-
-		ProgressChanged(totalSize, totalBytesRead, progressPercentage);
 	}
 	
 		

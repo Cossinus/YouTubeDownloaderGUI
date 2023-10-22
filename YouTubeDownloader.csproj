@@ -17,6 +17,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.0.2"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.0.2"/>
+        <PackageReference Include="Avalonia.Svg.Skia" Version="11.0.0.3" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.2"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.2"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -28,5 +29,6 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0-rc.2.23479.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.7.1" />
+        <PackageReference Include="Svg.Skia" Version="1.0.0.3" />
     </ItemGroup>
 </Project>

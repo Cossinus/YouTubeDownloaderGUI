@@ -1,28 +1,48 @@
-﻿using ReactiveUI;
+﻿using System.Reactive;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using ReactiveUI;
+using YouTubeDownloader.Utils;
 
 namespace YouTubeDownloader.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject
 {
+	public MainWindowViewModel()
+	{
+		CloseAppCommand = ReactiveCommand.Create(CloseApp);
+		MinimizeAppCommand = ReactiveCommand.Create(MinimizeApp);
+	}
+	
 	public string AppTitle { get; set; } = "YouTube Downloader GUI";
+	
+	public ReactiveCommand<Unit, Unit> CloseAppCommand { get; }
+	public ReactiveCommand<Unit, Unit> MinimizeAppCommand { get; }
+
+	private void CloseApp()
+	{
+		if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+		{
+			desktop.Shutdown();
+		}
+	}
+
+	private void MinimizeApp()
+	{
+		if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+		{
+			desktop.MainWindow!.WindowState = WindowState.Minimized;
+		}
+	}
 
 	#region Download Panel Properties
 
 	private string _fileName = "Test";
 	public string FileName
 	{
-		set
-		{
-			this.RaiseAndSetIfChanged(ref _fileName, value);
-			ProgressText = $"{{0}}/{{3}} {value} ({{1:0}}%)";
-		}
-	}
-
-	private double _progressPercentage;
-	public double ProgressPercentage
-	{
-		get => _progressPercentage;
-		set => this.RaiseAndSetIfChanged(ref _progressPercentage, value);
+		get => _fileName;
+		set => this.RaiseAndSetIfChanged(ref _fileName, value);
 	}
 
 	private long _fileSize;
@@ -36,7 +56,11 @@ public class MainWindowViewModel : ReactiveObject
 	public long BytesDownloaded
 	{
 		get => _bytesDownloaded;
-		set => this.RaiseAndSetIfChanged(ref _bytesDownloaded, value);
+		set
+		{
+			this.RaiseAndSetIfChanged(ref _bytesDownloaded, value);
+			ProgressText = $"{SizeConvert.ConvertSize(value):F2}/{SizeConvert.SizeSuffix(FileSize)} {FileName} ({{1:0}}%)";
+		}
 	}
 
 	private string _progressText = "{0}/{3}  ({1:0}%)";
