@@ -15,6 +15,7 @@ public static class Bootstrapper
 	{
 		services.Register(() => new HttpClient());
 		services.RegisterLazySingleton(() => new MainWindowViewModel());
+		services.RegisterLazySingleton(() => new DownloaderViewModel());
 		//services.RegisterLazySingleton<IDownloaderService>(() => new DownloaderService(resolver.GetRequiredService<MainWindowViewModel>(), resolver.GetRequiredService<HttpClient>()));
 		services.RegisterLazySingleton<IDownloaderService, DownloaderService>(resolver);
 	}

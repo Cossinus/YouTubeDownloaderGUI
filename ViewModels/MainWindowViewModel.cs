@@ -3,22 +3,26 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using ReactiveUI;
+using Splat;
 using YouTubeDownloader.Utils;
 
 namespace YouTubeDownloader.ViewModels;
 
-public class MainWindowViewModel : ReactiveObject
+public class MainWindowViewModel : ViewModelBase
 {
 	public MainWindowViewModel()
 	{
 		CloseAppCommand = ReactiveCommand.Create(CloseApp);
 		MinimizeAppCommand = ReactiveCommand.Create(MinimizeApp);
+		AppContainer = Locator.Current.GetRequiredService<DownloaderViewModel>();
 	}
 	
 	public string AppTitle { get; set; } = "YouTube Downloader GUI";
 	
 	public ReactiveCommand<Unit, Unit> CloseAppCommand { get; }
 	public ReactiveCommand<Unit, Unit> MinimizeAppCommand { get; }
+	
+	public DownloaderViewModel AppContainer { get; }
 
 	private void CloseApp()
 	{
@@ -30,7 +34,7 @@ public class MainWindowViewModel : ReactiveObject
 
 	private void MinimizeApp()
 	{
-		if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+		if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			desktop.MainWindow!.WindowState = WindowState.Minimized;
 		}

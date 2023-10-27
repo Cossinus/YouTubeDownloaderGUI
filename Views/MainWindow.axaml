@@ -43,27 +43,33 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
+    <!--
+    Color1: #1F0018
+    Color2: #1F0400
+    Color3: #1F0006
+    Color4: #18001F
+    Color5: #1F0900
+    -->
+    
     <Border>
-        <Grid ShowGridLines="True" RowDefinitions="*,*,*" ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*">
-            <ExperimentalAcrylicBorder Grid.RowSpan="3" Grid.ColumnSpan="12" IsHitTestVisible="False">
-                <ExperimentalAcrylicBorder.Material>
-                    <ExperimentalAcrylicMaterial
-                        BackgroundSource="Digger"
-                        TintColor="#1f0006"
-                        TintOpacity="1"
-                        MaterialOpacity="0.75" />
-                </ExperimentalAcrylicBorder.Material>
-            </ExperimentalAcrylicBorder>
+        <Grid RowDefinitions="Auto,*,*,*,*,*,*,Auto" ColumnDefinitions="Auto,*,*,*,*,*,*,*,*,*,*,*">
+            <!-- Background -->
+            <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" Grid.ColumnSpan="12" Source="/Assets/background.png" Stretch="UniformToFill">
+                <Image.Effect>
+                    <BlurEffect Radius="80"/>
+                </Image.Effect>
+            </Image>
+            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" Grid.ColumnSpan="12" Background="#1F0006" Opacity="0.8"/>
             
+            <!-- Title Bar -->
             <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12" Background="#1F0018" Height="30" 
                     VerticalAlignment="Top"
                     PointerMoved="DragPanel_OnPointerMoved" 
                     PointerPressed="DragPanel_OnPointerPressed" 
                     PointerReleased="DragPanel_OnPointerReleased">
                 <Grid HorizontalAlignment="Stretch">
-                    <Image HorizontalAlignment="Left" Source="avares://YouTubeDownloader/Assets/ytdlp.png"/>
-                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" 
-                           VerticalAlignment="Center" Padding="33,1,0,0"/>
+                    <Image Height="25" Width="25" Margin="10,0,0,0" HorizontalAlignment="Left" Source="avares://YouTubeDownloader/Assets/ytdlp.png"/>
+                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Center" Padding="43,1,0,0"/>
                     
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button Classes="MinimizeButton" Command="{Binding MinimizeAppCommand}"
@@ -71,7 +77,7 @@
                                 CornerRadius="0" 
                                 Background="Transparent" 
                                 BorderThickness="0">
-                            <Image Source="/Assets/Minimize.png"/>
+                            <Image Source="avares://YouTubeDownloader/Assets/Minimize.png"/>
                             <Button.Transitions>
                                 <Transitions>
                                     <BrushTransition Property="Background" Duration="0:0:0.2"/>
@@ -83,7 +89,7 @@
                                 CornerRadius="0" 
                                 Background="Transparent" 
                                 BorderThickness="0">
-                            <Image Source="/Assets/Close.png"/>
+                            <Image Source="avares://YouTubeDownloader/Assets/Close.png"/>
                             <Button.Transitions>
                                 <Transitions>
                                     <BrushTransition Property="Background" Duration="0:0:0.2"/>
@@ -93,12 +99,45 @@
                     </StackPanel>
                 </Grid>
             </Border>
-        
             
-        
+            <!-- Nav Bar -->
+            <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="6" Background="#1F0018" 
+                    HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="50">
+                <StackPanel Width="50" VerticalAlignment="Stretch" Orientation="Vertical">
+                    
+                    <!-- Binaries buttons -->
+                    <Panel Height="50" HorizontalAlignment="Stretch">
+                        <Image Margin="-10,0,0,0" Opacity="1" Height="30" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
+                            <Image.Transitions>
+                                
+                            </Image.Transitions>
+                        </Image>
+                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent">
+                            <Image Width="20" Height="20" Source="avares://YouTubeDownloader/Assets/YT.png"/>
+                        </Button> 
+                    </Panel>
+                    <Panel Height="50" HorizontalAlignment="Stretch">
+                        <Image Margin="-10,0,0,0" Opacity="0" Height="30" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
+                            <Image.Transitions>
+                                
+                            </Image.Transitions>
+                        </Image>
+                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent">
+                            <Image Width="20" Height="20" Source="avares://YouTubeDownloader/Assets/Video.png"/>
+                        </Button>
+                    </Panel>
+                </StackPanel>
+            </Border>
+            
+            <!-- Main Window -->
+            <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="11">
+                <ContentControl Content="{Binding AppContainer}"/>
+            </Border>
+            
+            <!-- Download Panel -->
             <StackPanel x:Name="DownloadPanel" Height="0" 
                         VerticalAlignment="Bottom" HorizontalAlignment="Stretch" 
-                        Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="12">
+                        Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="12">
                 <StackPanel.Transitions>
                     <Transitions>
                         <DoubleTransition Property="Height" Duration="0:0:0.5"/>
@@ -113,5 +152,7 @@
                              Height="30" Foreground="#1F0018"/>
             </StackPanel>
         </Grid>
+        
     </Border>
+    
 </Window>
