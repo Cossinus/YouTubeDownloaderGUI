@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:YouTubeDownloader.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="YouTubeDownloader.Views.DownloaderView"
-             x:DataType="vm:DownloaderViewModel">
-     
+             x:Class="YouTubeDownloader.Views.EditorView"
+             x:DataType="vm:EditorViewModel">
+    
     <Grid RowDefinitions="*,*,*" ColumnDefinitions="*,*,*">
-        <Image Source="/Assets/background.png" Stretch="UniformToFill"/>
+        <Label Content="{Binding Test}"/>
         <Button Grid.Row="1" Grid.Column="1" Command="{Binding TestButCommand}">
             <Label Content="Test"/>
         </Button>
-        <Label Grid.Row="2" Grid.Column="2" Content="{Binding Test}"/>
+        <Image Grid.Row="2" Grid.Column="2" Source="/Assets/background.png" Stretch="UniformToFill"/>
     </Grid>
 </UserControl>

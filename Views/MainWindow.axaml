@@ -4,6 +4,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:YouTubeDownloader.ViewModels"
         xmlns:svg="clr-namespace:Svg;assembly=Svg.Custom"
+        xmlns:enums="clr-namespace:YouTubeDownloader.Enums"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:models="clr-namespace:YouTubeDownloader.Models"
+        xmlns:youTubeDownloader="clr-namespace:YouTubeDownloader"
+        xmlns:views="clr-namespace:YouTubeDownloader.Views"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
         x:Class="YouTubeDownloader.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -24,6 +29,14 @@
         CanResize="True">
     
     <Window.Styles>
+        <Style Selector="Image.AppBackground">
+            <Setter Property="Grid.RowSpan" Value="8"/>
+            <Setter Property="Grid.ColumnSpan" Value="12"/>
+        </Style>
+        <Style Selector="Border.AppBackground">
+            <Setter Property="Grid.RowSpan" Value="8"/>
+            <Setter Property="Grid.ColumnSpan" Value="12"/>
+        </Style>
         <Style Selector="Button.ExitButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="Red"/>
             <Setter Property="Opacity" Value="0.7"/>
@@ -34,6 +47,34 @@
         </Style>
         <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+        <Style Selector="Button.AddTab">
+            <Setter Property="Padding" Value="4,3,3,3"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="26"/>
+        </Style>
+        <Style Selector="Button.Previous">
+            <Setter Property="Padding" Value="3,-2,0,0"/>
+            <Setter Property="Width" Value="26"/>
+        </Style>
+        <Style Selector="Button.Next">
+            <Setter Property="Padding" Value="4,-2,0,0"/>
+            <Setter Property="Width" Value="26"/>
+        </Style>
+        <Style Selector="Button.Tab">
+            <Setter Property="Padding" Value="2,0,-5,0"/>
+            <Setter Property="Height" Value="27"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="CornerRadius" Value="4,4,0,0"/>
+        </Style>
+        <Style Selector="Button.SelectedTab:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="Beige"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+        </Style>
+        <Style Selector="Button.SelectedTab">
+            <Setter Property="BorderBrush" Value="Beige"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
         </Style>
     </Window.Styles>
     
@@ -52,24 +93,24 @@
     -->
     
     <Border>
-        <Grid RowDefinitions="Auto,*,*,*,*,*,*,Auto" ColumnDefinitions="Auto,*,*,*,*,*,*,*,*,*,*,*">
+        <Grid RowDefinitions="Auto,Auto,*,*,*,*,*,Auto" ColumnDefinitions="Auto,*,*,*,*,*,*,*,*,*,*,*">
             <!-- Background -->
-            <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" Grid.ColumnSpan="12" Source="/Assets/background.png" Stretch="UniformToFill">
+            <Image Grid.Row="0" Grid.Column="0" Classes="AppBackground" Source="/Assets/background.png" Stretch="UniformToFill">
                 <Image.Effect>
                     <BlurEffect Radius="80"/>
                 </Image.Effect>
             </Image>
-            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="8" Grid.ColumnSpan="12" Background="#1F0006" Opacity="0.8"/>
+            <Border Grid.Row="0" Grid.Column="0" Classes="AppBackground" Background="#1F0006" Opacity="0.8"/>
             
             <!-- Title Bar -->
-            <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12" Background="#1F0018" Height="30" 
-                    VerticalAlignment="Top"
+            <Border x:Name="DragPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12" Background="#1F0006"
+                    VerticalAlignment="Top" Height="30"
                     PointerMoved="DragPanel_OnPointerMoved" 
                     PointerPressed="DragPanel_OnPointerPressed" 
                     PointerReleased="DragPanel_OnPointerReleased">
                 <Grid HorizontalAlignment="Stretch">
-                    <Image Height="25" Width="25" Margin="10,0,0,0" HorizontalAlignment="Left" Source="avares://YouTubeDownloader/Assets/ytdlp.png"/>
-                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Center" Padding="43,1,0,0"/>
+                    <Image Height="25" Width="25" Margin="10,1,0,0" HorizontalAlignment="Left" Source="avares://YouTubeDownloader/Assets/ytdlp.png"/>
+                    <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Center" Padding="45,1,0,0"/>
                     
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button Classes="MinimizeButton" Command="{Binding MinimizeAppCommand}"
@@ -101,37 +142,73 @@
             </Border>
             
             <!-- Nav Bar -->
-            <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="6" Background="#1F0018" 
+            <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="6" Background="#1F0006" 
                     HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="50">
                 <StackPanel Width="50" VerticalAlignment="Stretch" Orientation="Vertical">
                     
                     <!-- Binaries buttons -->
                     <Panel Height="50" HorizontalAlignment="Stretch">
-                        <Image Margin="-10,0,0,0" Opacity="1" Height="30" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
+                        <Image x:Name="SelectedYt" Margin="-10,0,0,0" Opacity="1" Height="30" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
                             <Image.Transitions>
-                                
+                                <Transitions>
+                                    <DoubleTransition Property="Height" Duration="0:0:0.3"/>
+                                </Transitions>
                             </Image.Transitions>
                         </Image>
-                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent">
+                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent" Command="{Binding SelectBinaryCommand}">
+                            <Button.CommandParameter>
+                                <enums:TabType>YtDlp</enums:TabType>
+                            </Button.CommandParameter>
                             <Image Width="20" Height="20" Source="avares://YouTubeDownloader/Assets/YT.png"/>
                         </Button> 
                     </Panel>
                     <Panel Height="50" HorizontalAlignment="Stretch">
-                        <Image Margin="-10,0,0,0" Opacity="0" Height="30" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
+                        <Image x:Name="SelectedFf" Margin="-10,0,0,0" Opacity="1" Height="0" HorizontalAlignment="Left" Source="/Assets/VertLine.png">
                             <Image.Transitions>
-                                
+                                <Transitions>
+                                    <DoubleTransition Property="Height" Duration="0:0:0.3"/>
+                                </Transitions>
                             </Image.Transitions>
                         </Image>
-                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent">
+                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="0" Background="Transparent" Command="{Binding SelectBinaryCommand}">
+                            <Button.CommandParameter>
+                                <enums:TabType>FfMpeg</enums:TabType>
+                            </Button.CommandParameter>
                             <Image Width="20" Height="20" Source="avares://YouTubeDownloader/Assets/Video.png"/>
                         </Button>
                     </Panel>
                 </StackPanel>
             </Border>
             
+            <!-- Tabs bar -->
+            <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="11" Background="#1F0006" 
+                    VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30">
+                <Grid HorizontalAlignment="Stretch">
+                    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" HorizontalAlignment="Stretch" Margin="2,0,88,0" Height="30">
+                        <!-- TODO think about doing it another way cause this solution sucks -->
+                        <StackPanel x:Name="TabsParent" Height="30" Orientation="Horizontal">
+                            <Label/>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Border HorizontalAlignment="Right">
+                        <StackPanel Margin="3,0,3,0" Orientation="Horizontal">
+                            <Button Classes="AddTab" Command="{Binding AddTabCommand}">
+                                <Image Source="/Assets/Plus.png"/>
+                            </Button>
+                            <Button Classes="Previous" Command="{Binding SwitchTabLeftCommand}">
+                                <Label Content="&lt;"/>
+                            </Button>
+                            <Button Classes="Next" Command="{Binding SwitchTabRightCommand}">
+                                <Label Content="&gt;"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+            
             <!-- Main Window -->
-            <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="6" Grid.ColumnSpan="11">
-                <ContentControl Content="{Binding AppContainer}"/>
+            <Border Grid.Row="2" Grid.Column="1" Grid.RowSpan="5" Grid.ColumnSpan="11">
+                <ContentControl Content="{Binding CurrentAppContainer}"/>
             </Border>
             
             <!-- Download Panel -->
@@ -144,7 +221,6 @@
                     </Transitions>
                 </StackPanel.Transitions>
                 
-                
                 <ProgressBar HorizontalAlignment="Stretch" ShowProgressText="True"
                              ProgressTextFormat="{Binding ProgressText}" 
                              Maximum="{Binding FileSize}" 
@@ -152,7 +228,5 @@
                              Height="30" Foreground="#1F0018"/>
             </StackPanel>
         </Grid>
-        
     </Border>
-    
 </Window>

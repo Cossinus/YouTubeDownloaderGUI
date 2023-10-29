@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace YouTubeDownloader.ViewModels;
 
-public class DownloaderViewModel : AppContainer
+public class EditorViewModel : AppContainer
 {
 	private string _test = "Test";
 	public string Test
@@ -12,7 +12,7 @@ public class DownloaderViewModel : AppContainer
 		set => this.RaiseAndSetIfChanged(ref _test, value);
 	}
 	
-	public DownloaderViewModel()
+	public EditorViewModel()
 	{
 		TestButCommand = ReactiveCommand.Create(TestBut);
 	}
@@ -21,6 +21,6 @@ public class DownloaderViewModel : AppContainer
 	
 	private void TestBut()
 	{
-		Test = "Tested";
+		Test = "Tested2";
 	}
 }
