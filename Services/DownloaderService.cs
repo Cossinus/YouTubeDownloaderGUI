@@ -1,63 +1,81 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using YouTubeDownloader.Interfaces;
 using YouTubeDownloader.Utils;
 using YouTubeDownloader.ViewModels;
 
 namespace YouTubeDownloader.Services;
 
-public class DownloaderService : IDownloaderService
+public class DownloaderService(
+	MainWindowViewModel mainWindow,
+	HttpClient httpClient)
+	: IDownloaderService
 {
-	private readonly MainWindowViewModel _mainWindowViewModel;
-	private readonly HttpClient _httpClient;
+	private const string YtDlpDownloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+	private const string FfDownloadUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
 
-	public DownloaderService(MainWindowViewModel mainWindowViewModel, HttpClient httpClient)
+	private StackPanel _downloadPanel = null!;
+	
+	private readonly string _ytDlpBinaryName = Path.GetFileName(Storage.YtDlpBinaryPath);
+	private readonly string _ffmpegBinaryName = Path.GetFileName(Storage.FfmpegBinaryPath);
+	
+	public void InitPanel(StackPanel panel)
 	{
-		_mainWindowViewModel = mainWindowViewModel;
-		_httpClient = httpClient;
+		_downloadPanel = panel;
 	}
 
-	private const string YtDlpDownloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
-	private static string YtDlpBinaryName => "yt-dlp.exe";
-	
-	private const string FfDownloadUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
-	private const string FfmpegBinaryName = "ffmpeg.exe";
+	public async Task<Bitmap?> DownloadThumbnail(string filePath, string url)
+	{
+		if (File.Exists(filePath))
+		{
+			return new Bitmap(filePath);
+		}
+		
+		using var response = await httpClient.GetAsync(url);
+		response.EnsureSuccessStatusCode();
 
-	public async Task DownloadBinaries(StackPanel panel, string directoryPath = "")
+		var data = await response.Content.ReadAsByteArrayAsync();
+		return new Bitmap(new MemoryStream(data));
+	}
+	
+	public async Task DownloadBinaries(string directoryPath = "")
 	{
 		if (string.IsNullOrEmpty(directoryPath))
 		{
-			directoryPath = Directory.GetCurrentDirectory();
+			directoryPath = Storage.BasePath;
 		}
 		else
 		{
 			Directory.CreateDirectory(directoryPath);
 		}
 		
-		panel.Height = 30;
+		_downloadPanel.Height = 30;
 
 		await DownloadYtDlpBinary(directoryPath);
 		await DownloadFfBinary(directoryPath);
 
-		panel.Height = 0;
+		_downloadPanel.Height = 0;
 	}
 
 	private async Task DownloadYtDlpBinary(string directoryPath)
 	{
-		if (!File.Exists(Path.Combine(directoryPath, YtDlpBinaryName)))
+		if (!File.Exists(Storage.YtDlpBinaryPath))
 		{
-			using var client = new DownloadWithProgress(YtDlpDownloadUrl, Path.Combine(directoryPath, Path.GetFileName(YtDlpDownloadUrl)), _httpClient);
+			using var client = new DownloadWithProgress(
+				YtDlpDownloadUrl,
+				Path.Combine(directoryPath, Path.GetFileName(YtDlpDownloadUrl)),
+				httpClient);
 			
-			_mainWindowViewModel.FileName = YtDlpBinaryName;
+			mainWindow.FileName = _ytDlpBinaryName;
 			
 			client.ProgressChanged += (totalFileSize, totalBytesDownloaded) =>
 			{
-				_mainWindowViewModel.FileSize = totalFileSize!.Value;
-				_mainWindowViewModel.BytesDownloaded = totalBytesDownloaded;
+				mainWindow.FileSize = totalFileSize!.Value;
+				mainWindow.BytesDownloaded = totalBytesDownloaded;
 			};
 			
 			await client.StartDownload();
@@ -66,18 +84,18 @@ public class DownloaderService : IDownloaderService
 
 	private async Task DownloadFfBinary(string directoryPath)
 	{
-		if (!File.Exists(Path.Combine(directoryPath, FfmpegBinaryName)))
+		if (!File.Exists(Path.Combine(directoryPath, _ffmpegBinaryName)))
 		{
 			var zipName = Path.Combine(directoryPath, Path.GetFileName("ffmpeg.zip"));
 		
-			using var client = new DownloadWithProgress(FfDownloadUrl, zipName, _httpClient);
+			using var client = new DownloadWithProgress(FfDownloadUrl, zipName, httpClient);
 
-			_mainWindowViewModel.FileName = FfmpegBinaryName;
+			mainWindow.FileName = _ffmpegBinaryName;
 
 			client.ProgressChanged += (totalFileSize, totalBytesDownloaded) =>
 			{
-				_mainWindowViewModel.FileSize = totalFileSize!.Value;
-				_mainWindowViewModel.BytesDownloaded = totalBytesDownloaded;
+				mainWindow.FileSize = totalFileSize!.Value;
+				mainWindow.BytesDownloaded = totalBytesDownloaded;
 			};
 		
 			await client.StartDownload();
@@ -86,12 +104,12 @@ public class DownloaderService : IDownloaderService
 			{
 				foreach (var entry in zipArchive.Entries)
 				{
-					if (entry.Name != "ffmpeg.exe") continue;
+					if (!entry.Name.Equals(_ffmpegBinaryName)) continue;
 					
 					entry.ExtractToFile(Path.Combine(directoryPath, entry.Name));
 				}
 			}
-		
+			
 			File.Delete(zipName);
 		}
 	}

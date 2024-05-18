@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using Avalonia;
@@ -9,10 +8,11 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
+using Splat;
 using YouTubeDownloader.Enums;
+using YouTubeDownloader.Interfaces;
 using YouTubeDownloader.Models;
 using YouTubeDownloader.Utils;
 using YouTubeDownloader.Views;
@@ -53,10 +53,10 @@ public class MainWindowViewModel : ViewModelBase
 	public ReactiveCommand<Unit, Unit> CloseAppCommand { get; }
 	public ReactiveCommand<Unit, Unit> MinimizeAppCommand { get; }
 	public ReactiveCommand<int, Unit> SelectTabCommand { get; }
+	public ReactiveCommand<int, Unit> CloseTabCommand { get; }
 	public ReactiveCommand<Unit, Unit> AddTabCommand { get; }
 	public ReactiveCommand<Unit, Unit> SwitchTabLeftCommand { get; }
 	public ReactiveCommand<Unit, Unit> SwitchTabRightCommand { get; }
-	public ReactiveCommand<int, Unit> CloseTabCommand { get; }
 	public ReactiveCommand<TabType, Unit> SelectBinaryCommand { get; }
 
 	private void CloseApp()
@@ -75,7 +75,9 @@ public class MainWindowViewModel : ViewModelBase
 		}
 	}
 
-	private void AddTab()
+	#region TabCommands
+
+	public void AddTab()
 	{
 		var newTab = new TabModel(_selectedBinary)
 		{
@@ -206,7 +208,7 @@ public class MainWindowViewModel : ViewModelBase
 
 			if (_previousSelectedButton == currButton) return;
 			
-			_previousSelectedButton.Classes.RemoveAt(1);
+			_previousSelectedButton.Classes.Remove("SelectedTab");
 			currButton.Classes.Add("SelectedTab");
 			_previousSelectedButton = currButton;
 		}
@@ -234,6 +236,8 @@ public class MainWindowViewModel : ViewModelBase
 		
 		AddTab();
 	}
+
+	#endregion
 
 	#region Download Panel Properties
 

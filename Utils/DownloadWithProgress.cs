@@ -5,26 +5,18 @@ using System.Threading.Tasks;
 
 namespace YouTubeDownloader.Utils;
 
-public class DownloadWithProgress : IDisposable
+public class DownloadWithProgress(
+	string downloadUrl,
+	string destinationPath,
+	HttpClient httpClient)
+	: IDisposable
 {
-	private readonly string _downloadUrl;
-	private readonly string _destinationPath;
-	private readonly HttpClient _httpClient;
-
 	public delegate void ProgressChangedHandler(long? totalSize, long totalBytesDownloaded);
-
 	public event ProgressChangedHandler ProgressChanged = null!;
-	
-	public DownloadWithProgress(string downloadUrl, string destinationPath, HttpClient httpClient)
-	{
-		_downloadUrl = downloadUrl;
-		_destinationPath = destinationPath;
-		_httpClient = httpClient;
-	}
 
 	public async Task StartDownload()
 	{
-		using var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead);
+		using var response = await httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
 		response.EnsureSuccessStatusCode();
 			
 		await using var contentStream = await response.Content.ReadAsStreamAsync();
@@ -34,7 +26,7 @@ public class DownloadWithProgress : IDisposable
 		var buffer = new byte[8192];
 		var isMoreToRead = true;
 			
-		await using var fileStream = new FileStream(_destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+		await using var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
 
 		do
 		{
@@ -55,7 +47,6 @@ public class DownloadWithProgress : IDisposable
 		} while (isMoreToRead);
 	}
 	
-		
 	public void Dispose()
 	{
 		GC.SuppressFinalize(this);

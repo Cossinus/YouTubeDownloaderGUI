@@ -15,17 +15,17 @@ public static class Bootstrapper
 	{
 		services.Register(() => new HttpClient());
 		services.RegisterLazySingleton(() => new MainWindowViewModel());
-		//services.RegisterLazySingleton<IDownloaderService>(() => new DownloaderService(resolver.GetRequiredService<MainWindowViewModel>(), resolver.GetRequiredService<HttpClient>()));
 		services.RegisterLazySingleton<IDownloaderService, DownloaderService>(resolver);
 	}
 
-	public static void RegisterLazySingleton<TInterface, TService>(this IMutableDependencyResolver services,
+	public static void RegisterLazySingleton<TInterface, TService>(
+		this IMutableDependencyResolver services,
 		IReadonlyDependencyResolver resolver)
 	{
 		var serviceType = typeof(TService);
 		var constructors = serviceType.GetConstructors().Single();
 
-		IList<Func<object>> values = new List<Func<object>>();
+		var values = new List<Func<object>>();
 
 		foreach (var parameter in constructors.GetParameters())
 		{

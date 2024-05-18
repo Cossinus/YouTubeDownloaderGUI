@@ -7,9 +7,6 @@ public class TabModel
 {
 	public TabModel(TabType tabType)
 	{
-		if (tabType == TabType.YtDlp) AppContainer = new DownloaderViewModel();
-		else AppContainer = new EditorViewModel();
-		
 		TabType = tabType;
 		TabName = $"New {TabType} tab";
 	}
@@ -17,5 +14,5 @@ public class TabModel
 	public string TabName { get; }
 	public TabType TabType { get; }
 	
-	public AppContainer AppContainer { get; init; }
+	public required AppContainer AppContainer { get; init; }
 }

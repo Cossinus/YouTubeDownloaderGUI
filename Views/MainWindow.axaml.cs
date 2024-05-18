@@ -1,9 +1,9 @@
-using System.IO;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.ReactiveUI;
 using Splat;
 using YouTubeDownloader.Interfaces;
+using YouTubeDownloader.Utils;
 using YouTubeDownloader.ViewModels;
 
 namespace YouTubeDownloader.Views;
@@ -19,13 +19,16 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 #endif
 		
 		var downloader = Locator.Current.GetRequiredService<IDownloaderService>();
-		downloader.DownloadBinaries(DownloadPanel, $@"{Directory.GetCurrentDirectory()}\binaries\");
+		downloader.InitPanel(DownloadPanel);
+		downloader.DownloadBinaries(Storage.BinariesDirectory);
 	}
 
 	#region WindowDrag
 
 	private Point _previousMousePosition;
 	private bool _leftButtonPressed;
+	
+	//TODO resize on top panel
 	
 	private void DragPanel_OnPointerPressed(object? sender, PointerPressedEventArgs e)
 	{

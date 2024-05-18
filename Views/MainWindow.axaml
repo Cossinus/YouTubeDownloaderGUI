@@ -3,12 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:YouTubeDownloader.ViewModels"
-        xmlns:svg="clr-namespace:Svg;assembly=Svg.Custom"
         xmlns:enums="clr-namespace:YouTubeDownloader.Enums"
-        xmlns:system="clr-namespace:System;assembly=System.Runtime"
-        xmlns:models="clr-namespace:YouTubeDownloader.Models"
-        xmlns:youTubeDownloader="clr-namespace:YouTubeDownloader"
-        xmlns:views="clr-namespace:YouTubeDownloader.Views"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
         x:Class="YouTubeDownloader.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -17,16 +12,15 @@
         ExtendClientAreaChromeHints="NoChrome"
         WindowStartupLocation="CenterScreen"
         TransparencyLevelHint="AcrylicBlur"
-        MinWidth="1280" MinHeight="720"
         Title="YouTube Downloader GUI"
-        Width="1920" Height="1080"
+        MinWidth="1280" MinHeight="720"
+        Width="1280" Height="720"
         Background="Transparent"
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
         UseLayoutRounding="True"
         Icon="/Assets/ytdlp.png"
         FontFamily="Poppins"
-        ClipToBounds="True"
-        CanResize="True">
+        ClipToBounds="True">
     
     <Window.Styles>
         <Style Selector="Image.AppBackground">
@@ -38,15 +32,16 @@
             <Setter Property="Grid.ColumnSpan" Value="12"/>
         </Style>
         <Style Selector="Button.ExitButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="Red"/>
-            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Background" Value="#b3ff0000"/>
+        </Style>
+        <Style Selector="Button.ExitButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#7fff0000"/>
         </Style>
         <Style Selector="Button.MinimizeButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Opacity" Value="0.4"/>
+            <Setter Property="Background" Value="#66ffffff"/>
         </Style>
-        <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Opacity" Value="0.5"/>
+        <Style Selector="Button.MinimizeButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#7fffffff"/>
         </Style>
         <Style Selector="Button.AddTab">
             <Setter Property="Padding" Value="4,3,3,3"/>
@@ -61,6 +56,9 @@
             <Setter Property="Padding" Value="4,-2,0,0"/>
             <Setter Property="Width" Value="26"/>
         </Style>
+        <Style Selector="Button.Tab:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#44f5f5dc"/>
+        </Style>
         <Style Selector="Button.Tab">
             <Setter Property="Padding" Value="2,0,-5,0"/>
             <Setter Property="Height" Value="27"/>
@@ -71,6 +69,9 @@
         <Style Selector="Button.SelectedTab:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="BorderBrush" Value="Beige"/>
             <Setter Property="BorderThickness" Value="1,1,1,0"/>
+        </Style>
+        <Style Selector="Button.SelectedTab:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#44f5f5dc"/>
         </Style>
         <Style Selector="Button.SelectedTab">
             <Setter Property="BorderBrush" Value="Beige"/>
