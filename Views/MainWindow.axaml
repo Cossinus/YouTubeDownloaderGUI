@@ -43,6 +43,15 @@
         <Style Selector="Button.MinimizeButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="#7fffffff"/>
         </Style>
+        <Style Selector="Button.SettingsButton,
+                         Button.MinimizeButton,
+                         Button.ExitButton">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
         <Style Selector="Button.AddTab">
             <Setter Property="Padding" Value="4,3,3,3"/>
             <Setter Property="Height" Value="25"/>
@@ -114,11 +123,15 @@
                     <Label x:Name="AppTitle" Content="{Binding AppTitle}" VerticalAlignment="Center" Padding="45,1,0,0"/>
                     
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button Classes="MinimizeButton" Command="{Binding MinimizeAppCommand}"
-                                Height="30" Width="30" 
-                                CornerRadius="0" 
-                                Background="Transparent" 
-                                BorderThickness="0">
+                        <Button Classes="SettingsButton" Padding="7" Command="{Binding OpenSettingsCommand}">
+                            <Image Source="avares://YouTubeDownloader/Assets/Settings.png"/>
+                            <Button.Transitions>
+                                <Transitions>
+                                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                                </Transitions>
+                            </Button.Transitions>
+                        </Button>
+                        <Button Classes="MinimizeButton" Padding="6" Command="{Binding MinimizeAppCommand}">
                             <Image Source="avares://YouTubeDownloader/Assets/Minimize.png"/>
                             <Button.Transitions>
                                 <Transitions>
@@ -126,11 +139,7 @@
                                 </Transitions>
                             </Button.Transitions>
                         </Button>
-                        <Button Classes="ExitButton" Command="{Binding CloseAppCommand}"
-                                Height="30" Width="30" 
-                                CornerRadius="0" 
-                                Background="Transparent" 
-                                BorderThickness="0">
+                        <Button Classes="ExitButton" Padding="9,9,10,9" Command="{Binding CloseAppCommand}">
                             <Image Source="avares://YouTubeDownloader/Assets/Close.png"/>
                             <Button.Transitions>
                                 <Transitions>
@@ -194,7 +203,7 @@
                     <Border HorizontalAlignment="Right">
                         <StackPanel Margin="3,0,3,0" Orientation="Horizontal">
                             <Button Classes="AddTab" Command="{Binding AddTabCommand}">
-                                <Image Source="/Assets/Plus.png"/>
+                                <Image Source="avares://YouTubeDownloader/Assets/Plus.png"/>
                             </Button>
                             <Button Classes="Previous" Command="{Binding SwitchTabLeftCommand}">
                                 <Label Content="&lt;"/>

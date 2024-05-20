@@ -12,10 +12,12 @@ public static class Storage
     public static readonly string FfmpegBinaryPath = Path.Combine(BinariesDirectory, "ffmpeg.exe");
     
     public static readonly string TempDirectory = Path.Combine(BasePath, "temp");
+    public static readonly string DownloadsDirectory = Path.Combine(BasePath, "downloads");
     
     static Storage()
     {
         Directory.CreateDirectory(BinariesDirectory);
         Directory.CreateDirectory(TempDirectory);
+        Directory.CreateDirectory(DownloadsDirectory);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using Avalonia;
@@ -10,9 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using DynamicData.Binding;
 using ReactiveUI;
-using Splat;
 using YouTubeDownloader.Enums;
-using YouTubeDownloader.Interfaces;
 using YouTubeDownloader.Models;
 using YouTubeDownloader.Utils;
 using YouTubeDownloader.Views;
@@ -23,7 +22,7 @@ public class MainWindowViewModel : ViewModelBase
 {
 	public string AppTitle { get; set; } = "YouTube Downloader GUI";
 
-	private IObservableCollection<TabModel> Tabs { get; }
+	private ObservableCollection<TabModel> Tabs { get; }
 
 	private AppContainer _currentAppContainer = null!;
 	public AppContainer CurrentAppContainer
@@ -40,6 +39,7 @@ public class MainWindowViewModel : ViewModelBase
 	{
 		CloseAppCommand = ReactiveCommand.Create(CloseApp);
 		MinimizeAppCommand = ReactiveCommand.Create(MinimizeApp);
+		OpenSettingsCommand = ReactiveCommand.Create(OpenSettings);
 		AddTabCommand = ReactiveCommand.Create(AddTab);
 		SwitchTabLeftCommand = ReactiveCommand.Create(SwitchTabLeft);
 		SwitchTabRightCommand = ReactiveCommand.Create(SwitchTabRight);
@@ -52,12 +52,15 @@ public class MainWindowViewModel : ViewModelBase
 	
 	public ReactiveCommand<Unit, Unit> CloseAppCommand { get; }
 	public ReactiveCommand<Unit, Unit> MinimizeAppCommand { get; }
+	public ReactiveCommand<Unit, Unit> OpenSettingsCommand { get; }
 	public ReactiveCommand<int, Unit> SelectTabCommand { get; }
 	public ReactiveCommand<int, Unit> CloseTabCommand { get; }
 	public ReactiveCommand<Unit, Unit> AddTabCommand { get; }
 	public ReactiveCommand<Unit, Unit> SwitchTabLeftCommand { get; }
 	public ReactiveCommand<Unit, Unit> SwitchTabRightCommand { get; }
 	public ReactiveCommand<TabType, Unit> SelectBinaryCommand { get; }
+
+	#region TitleBarCommands
 
 	private void CloseApp()
 	{
@@ -74,6 +77,13 @@ public class MainWindowViewModel : ViewModelBase
 			desktop.MainWindow!.WindowState = WindowState.Minimized;
 		}
 	}
+
+	public void OpenSettings()
+	{
+		
+	}
+
+	#endregion
 
 	#region TabCommands
 
@@ -145,8 +155,9 @@ public class MainWindowViewModel : ViewModelBase
 		{
 			tabButton.Classes.Add("SelectedTab");
 			_previousSelectedButton = tabButton;
-			SelectTab(0);
 		}
+		
+		SelectTab(Tabs.Count - 1);
 	}
 
 	private void CloseTab(int tabIndex)
@@ -226,12 +237,18 @@ public class MainWindowViewModel : ViewModelBase
 
 		if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			var mainWindow = desktop.MainWindow as MainWindow;
-
-			mainWindow!.SelectedYt.Height = 0;
-			mainWindow.SelectedFf.Height = 0;
-			if (tabType == TabType.YtDlp) mainWindow.SelectedYt.Height = 30;
-			else mainWindow.SelectedFf.Height = 30;
+			var mainWindow = (desktop.MainWindow as MainWindow)!;
+			
+			if (tabType == TabType.YtDlp)
+			{
+				mainWindow.SelectedFf.Height = 0;
+				mainWindow.SelectedYt.Height = 30;
+			}
+			else
+			{
+				mainWindow.SelectedYt.Height = 0;
+				mainWindow.SelectedFf.Height = 30;
+			}
 		}
 		
 		AddTab();

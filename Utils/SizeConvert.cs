@@ -4,13 +4,12 @@ namespace YouTubeDownloader.Utils;
 
 public static class SizeConvert
 {
-	private static readonly string[] SizeSuffixes =
-	{
+	private static readonly string[] SizeSuffixes = [
 		"bytes",
 		"KB",
 		"MB",
-		"GB",
-	};
+		"GB"
+	];
 
 	/// <summary>
 	/// Converts provided value to a corresponding decimal value in file size with suffix

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
+using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using ReactiveUI;
 using Splat;
@@ -31,7 +32,7 @@ public class DownloaderViewModel : AppContainer
 		set => this.RaiseAndSetIfChanged(ref _ytLink, value);
 	}
 
-	private string _targetDirectory = @$"{Directory.GetCurrentDirectory()}\Downloads\";
+	private string _targetDirectory = Storage.DownloadsDirectory;
 	public string TargetDirectory
 	{
 		get => _targetDirectory;
@@ -127,11 +128,14 @@ public class DownloaderViewModel : AppContainer
 	public DownloaderViewModel()
 	{
 		_downloader = Locator.Current.GetRequiredService<IDownloaderService>();
+		
 		FetchDataCommand = ReactiveCommand.CreateFromObservable(FetchData);
+		DownloadVideoCommand = ReactiveCommand.CreateFromObservable(DownloadVideo);
 	}
-
+	
 	public ReactiveCommand<Unit, Unit> FetchDataCommand { get; }
-
+	public ReactiveCommand<Unit, Unit> DownloadVideoCommand { get; }
+	
 	private IObservable<Unit> FetchData()
 	{
 		return Observable.StartAsync(async () =>
@@ -166,7 +170,8 @@ public class DownloaderViewModel : AppContainer
 			Availability = outputLines[2];
 			ChannelName = outputLines[3];
 			
-			ChannelFollowerCount = $"{outputLines[4]} Subscriber{(outputLines[4] == "1" ? "" : "s")}"; //TODO Convert to k/m
+			var followerCount = NumberConvert.ValueSuffix(long.Parse(outputLines[4]));
+			ChannelFollowerCount = $"{followerCount} Subscriber{(outputLines[4] == "1" ? "" : "s")}"; //TODO Convert to k/m
 			
 			UploadDate = DateTime.ParseExact(outputLines[5], "yyyyMMdd", null).ToString("yyyy-MM-dd");
 			ViewCount = $"{outputLines[6]} View{(outputLines[6] == "1" ? "" : "s")}";
@@ -181,6 +186,14 @@ public class DownloaderViewModel : AppContainer
 			}
 			
 			Description = string.Join("\n", outputLines[17..]);
+		});
+	}
+
+	private IObservable<Unit> DownloadVideo()
+	{
+		return Observable.StartAsync(async () =>
+		{
+
 		});
 	}
 

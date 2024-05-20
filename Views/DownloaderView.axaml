@@ -7,10 +7,34 @@
              x:Class="YouTubeDownloader.Views.DownloaderView"
              x:DataType="vm:DownloaderViewModel">
     
-    <!-- TODO Fix button hover and press background -->
+    <UserControl.Styles>
+        <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#15ffffff"/>
+            <Setter Property="BorderBrush" Value="#99ffffff"/>
+        </Style>
+        <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#3fffffff"/>
+            <Setter Property="BorderBrush" Value="#99ffffff"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="Background" Value="#66000000"/>
+            <Setter Property="BorderBrush" Value="#99ffffff"/>
+        </Style>
+        <Style Selector="TextBlock.Small">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#99ffffff"/>
+        </Style>
+        <Style Selector="TextBlock.Medium">
+            <Setter Property="FontSize" Value="22"/>
+        </Style>
+        <Style Selector="TextBlock.Big">
+            <Setter Property="FontSize" Value="32"/>
+        </Style>
+    </UserControl.Styles>
     
-    <Grid ShowGridLines="True" RowDefinitions="Auto,2*,*,*,*" ColumnDefinitions="2*,*">
-        <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" Text="Video Link"/>
+    <Grid RowDefinitions="Auto,2*,*,*,*" ColumnDefinitions="2*,*">
+        <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="Video Link"/>
         <TextBox Grid.Row="0" Grid.Column="0"
                  HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                  Watermark="Put your link there..." TextWrapping="NoWrap" 
@@ -19,17 +43,23 @@
         <Button Grid.Row="0" Grid.Column="0"
                 HorizontalAlignment="Right" VerticalAlignment="Center" 
                 Padding="1,3,1,0" Command="{Binding FetchDataCommand}"
-                BorderBrush="#99ffffff" Background="#66000000" 
-                Height="32" CornerRadius="3">
+                Height="32">
             <Label Content="Fetch Data"/>
         </Button>
+        <!-- TODO Maybe instead of fetch data button fetch after user pasted their link -->
         
-        <TextBlock Grid.Row="0" Grid.Column="1" Margin="7,0,0,0" VerticalAlignment="Center" Text="Target Directory"/>
-        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+        <TextBlock Grid.Row="0" Grid.Column="1" Margin="7,0,0,0"
+                   VerticalAlignment="Center"
+                   Text="Target Directory"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="110,2,38,2"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                  Watermark="Put a link there..." TextWrapping="NoWrap" 
-                 Text="{Binding TargetDirectory}"
-                 Margin="110,2,7,2" MaxLines="1"/>
-        <!-- TODO Select directory button -->
+                 Text="{Binding TargetDirectory}" MaxLines="1"/>
+        <Button Grid.Row="0" Grid.Column="1" Margin="0,0,4,0"
+                VerticalAlignment="Center" HorizontalAlignment="Right"
+                Height="32" Width="32" Click="SelectTargetDirectory">
+            <Image Source="avares://YouTubeDownloader/Assets/FolderIcon.png"/>
+        </Button>
         
         <!-- Options -->
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
@@ -38,32 +68,53 @@
         
         <!-- Video stats -->
         <!-- Change every TextBlock to TextBox so user can select and copy data 'IsReadOnly' -->
-        <Border Grid.Row="2" Grid.Column="0" Grid.RowSpan="3"
-                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2">
-            <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,*" Margin="5,10,0,0">
-                <TextBlock Margin="30,-10,0,0" FontSize="27" Text="Video Stats"/>
-                <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,120,0" HorizontalScrollBarVisibility="Hidden">
-                    <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Title}"/>
+        <Border Grid.Row="2" Grid.Column="0" Grid.RowSpan="3" Margin="2"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="*,*" Margin="6,10,4,0">
+                <TextBlock Margin="30,-10,0,0" Classes="Big" Text="Video Information"/>
+                <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,120,0"
+                              HorizontalScrollBarVisibility="Hidden">
+                    <TextBlock Classes="Medium" FontWeight="Bold" Text="{Binding Title}"/>
                 </ScrollViewer>
-                <TextBlock Grid.Row="1" Grid.Column="1" FontSize="22" Text="{Binding UploadDate}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Classes="Medium" Text="{Binding UploadDate}"/>
                 <StackPanel Grid.Row="2" Grid.Column="0">
-                    <TextBlock FontSize="22" Text="{Binding ChannelName}"/>
-                    <TextBlock FontSize="12" Foreground="#99ffffff" Text="{Binding ChannelFollowerCount}"/>
+                    <TextBlock Classes="Medium" Text="{Binding ChannelName}"/>
+                    <TextBlock Classes="Small" Text="{Binding ChannelFollowerCount}"/>
                 </StackPanel>
-                <TextBlock Grid.Row="2" Grid.Column="1" FontSize="22" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding ViewCount}"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" FontSize="22" VerticalAlignment="Top" HorizontalAlignment="Right" Text="{Binding LikeCount}"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="#99ffffff" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding CommentCount}"/>
-                <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Hidden">
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                           Classes="Medium" Text="{Binding ViewCount}"/>
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           VerticalAlignment="Top" HorizontalAlignment="Right"
+                           Classes="Medium" Text="{Binding LikeCount}"/>
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                           Classes="Small" Text="{Binding CommentCount}"/>
+                <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                              VerticalScrollBarVisibility="Hidden">
                     <StackPanel Orientation="Vertical">
-                        <TextBlock FontSize="24" Text="Description"/>
-                        <TextBlock FontSize="11" Foreground="#99ffffff" Text="{Binding Description}"/>
+                        <TextBlock Classes="Medium" Text="Description"/>
+                        <TextBlock Classes="Small" Text="{Binding Description}"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
         </Border>
         
+        <!-- Thumbnail -->
         <Panel Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Background="Black">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Classes="Big" Text="Thumbnail"/>
             <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="{Binding Thumbnail}"/>
+        </Panel>
+        
+        <!-- Download Button Panel -->
+        <Panel Grid.Row="4" Grid.Column="1">
+            <Button Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                    Command="{Binding DownloadVideoCommand}">
+                <Label FontSize="22" Content="Download"/>
+            </Button>
         </Panel>
     </Grid>
 </UserControl>
